@@ -6,8 +6,12 @@ import PIL.Image
 from tkinter import *
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-import os
 from functools import partial
+import os
+import subprocess
+
+#隱藏黑窗
+CREATE_NO_WINDOW = 0x08000000
 
 #套用樣式
 controlPanel = ttk.Window(themename="cyborg")
@@ -47,7 +51,7 @@ controlPanel.protocol("WM_DELETE_WINDOW", withdraw_window)
 #切換輸入
 
 def selectInput(monitorString , inputValue):
-    os.system("ControlMyMonitor.exe /SetValue " + monitorString + " 60 "+inputValue)
+    subprocess.call("ControlMyMonitor.exe /SetValue " + monitorString + " 60 "+inputValue, creationflags=CREATE_NO_WINDOW)
     print("ControlMyMonitor.exe /SetValue " + monitorString + " 60 "+inputValue)
 
 
@@ -56,7 +60,7 @@ def selectInput(monitorString , inputValue):
 #掃描螢幕
 
 def scanMonitor():
-    os.system("ControlMyMonitor.exe /smonitors smonitors.txt")
+    subprocess.call("ControlMyMonitor.exe /smonitors smonitors.txt", creationflags=CREATE_NO_WINDOW)
     file = open('smonitors.txt', 'r',encoding="utf-16 le")
 
     MonitorList = file.readlines()
