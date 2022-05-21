@@ -12,14 +12,14 @@
 16,Video Gain (Drive): Red,Read+Write,50,100,
 18,Video Gain (Drive): Green,Read+Write,50,100,
 1A,Video Gain (Drive): Blue,Read+Write,50,100,
-52,Active Control,Read Only,135,,
+52,Active Control,Read Only,96,,
 60,Input Select,Read+Write,15,18,"15, 17, 18"
 87,Sharpness,Read+Write,0,5,
 AC,Horizontal Frequency,Read Only,52428,,
 AE,Vertical Frequency,Read Only,16530,,
 B2,Flat Panel Sub-Pixel Layout,Read Only,1,,
 B6,Display Technology Type,Read Only,3,,
-C0,Display Usage Time,Read Only,3614,,
+C0,Display Usage Time,Read Only,3619,,
 C8,Display Controller ID,Read+Write,29961,39,
 C9,Display Firmware Level,Read Only,18,,
 CC,OSD Language,Read+Write,1,37,"1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 19, 20, 22, 24, 25, 26, 29, 30, 33, 35, 37, 48, 49, 50"
