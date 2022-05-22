@@ -19,15 +19,15 @@ controlPanel.resizable(False,False)
 
 
 #設定視窗參數
-controlPanel.title('OpenMonitorControlPanel Alpha 0.1')
+controlPanel.title('OpenMonitorControlPanel Alpha 0.2')
 controlPanel.attributes("-alpha", 0.8)
 controlPanel.attributes("-topmost", 1)
 controlPanel.geometry('400x600-0-35')
 
 #導入圖片
-VGAImg = PhotoImage(file = r"VGA.png")
-HDMIImg = PhotoImage(file = r"HDMI.png")
-DPImg = PhotoImage(file = r"DP.png")
+VGAImg = PhotoImage(file = r"img\VGA.png")
+HDMIImg = PhotoImage(file = r"img\HDMI.png")
+DPImg = PhotoImage(file = r"img\DP.png")
 
 #System Tray Code
 
@@ -41,7 +41,7 @@ def show_window(icon, item):
 
 def withdraw_window():  
     controlPanel.withdraw()
-    image = PIL.Image.open("image.ico")
+    image = PIL.Image.open("img\image.ico")
     menu = (item('退出', quit_window), item('顯示', show_window ,default=True))
     icon = pystray.Icon("name", image, "Open Monitor Control Panel", menu)
     icon.run()
@@ -51,8 +51,8 @@ controlPanel.protocol("WM_DELETE_WINDOW", withdraw_window)
 #切換輸入
 
 def selectInput(monitorString , inputValue):
-    subprocess.call("ControlMyMonitor.exe /SetValue " + monitorString + " 60 "+inputValue, creationflags=CREATE_NO_WINDOW)
-    print("ControlMyMonitor.exe /SetValue " + monitorString + " 60 "+inputValue)
+    subprocess.call("API\ControlMyMonitor.exe /SetValue " + monitorString + " 60 "+inputValue, creationflags=CREATE_NO_WINDOW)
+    
 
 
 
@@ -60,23 +60,25 @@ def selectInput(monitorString , inputValue):
 #掃描螢幕
 
 def scanMonitor():
-    subprocess.call("ControlMyMonitor.exe /smonitors smonitors.txt", creationflags=CREATE_NO_WINDOW)
-    file = open('smonitors.txt', 'r',encoding="utf-16 le")
+    subprocess.call("API\ControlMyMonitor.exe /smonitors Cache\smonitors.txt", creationflags=CREATE_NO_WINDOW)
+    file = open('Cache\smonitors.txt', 'r',encoding="utf-16 le")
 
     MonitorList = file.readlines()
     MonitorList[0]=MonitorList[0][1:]
-    
     messagebox.showinfo("掃描完成" , "找到 " + str(len(MonitorList)//6) + " 個螢幕" )
     file.close()
+    
+    #初始化list
     Monitors=[]
     OptionList=[]
     lf=[]
     inputButton=[]
     inputOptions=[]
+
+    
     for i in range(len(MonitorList)//6):
-        os.system("ControlMyMonitor.exe /scomma monitor"+ str(i) +".txt "+MonitorList[0+6*i][21:])
-        print("ControlMyMonitor.exe /scomma monitor"+ str(i) +".txt "+MonitorList[0+6*i][21:])
-        file = open('monitor'+str(i)+'.txt', 'r',encoding="utf-8")
+        os.system("API\ControlMyMonitor.exe /scomma Cache\monitor"+ str(i) +".txt "+MonitorList[0+6*i][21:])
+        file = open('Cache\monitor'+str(i)+'.txt', 'r',encoding="utf-8")
         Monitors.append(file.readlines())
         file.close()
         OptionList.append({})

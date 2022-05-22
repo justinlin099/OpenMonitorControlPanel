@@ -19,7 +19,7 @@ AC,Horizontal Frequency,Read Only,52428,,
 AE,Vertical Frequency,Read Only,16530,,
 B2,Flat Panel Sub-Pixel Layout,Read Only,1,,
 B6,Display Technology Type,Read Only,3,,
-C0,Display Usage Time,Read Only,3620,,
+C0,Display Usage Time,Read Only,3621,,
 C8,Display Controller ID,Read+Write,29961,39,
 C9,Display Firmware Level,Read Only,18,,
 CC,OSD Language,Read+Write,1,37,"1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 19, 20, 22, 24, 25, 26, 29, 30, 33, 35, 37, 48, 49, 50"
