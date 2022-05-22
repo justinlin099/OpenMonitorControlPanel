@@ -28,6 +28,7 @@ controlPanel.geometry('400x600-0-35')
 VGAImg = PhotoImage(file = r"img\VGA.png")
 HDMIImg = PhotoImage(file = r"img\HDMI.png")
 DPImg = PhotoImage(file = r"img\DP.png")
+DVIImg = PhotoImage(file = r"img\DVI.png")
 
 #System Tray Code
 
@@ -94,9 +95,13 @@ def scanMonitor():
         
         inputOptions.append(OptionList[i]["60"][5][1:-2].split(','))
         for j in range(len(inputOptions[i])):
-            if(int(inputOptions[i][j])<15):
+            if(int(inputOptions[i][j])<3):
                 action_with_arg = partial(selectInput, MonitorList[0+6*i][21:-1], inputOptions[i][j])
                 inputButton[i].append(ttk.Button(lf[i], text="VGA", image = VGAImg, compound=TOP, bootstyle="secondary",command=action_with_arg))
+            
+            elif(int(inputOptions[i][j])<15):
+                action_with_arg = partial(selectInput, MonitorList[0+6*i][21:-1], inputOptions[i][j])
+                inputButton[i].append( ttk.Button(lf[i], text="DVI", image = DVIImg, compound=TOP,bootstyle="secondary",command=action_with_arg))
                 
             elif(int(inputOptions[i][j])<17):
                 action_with_arg = partial(selectInput, MonitorList[0+6*i][21:-1], inputOptions[i][j])
