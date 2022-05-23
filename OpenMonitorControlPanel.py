@@ -1,11 +1,5 @@
-from asyncio.windows_events import NULL
-from calendar import c
-from faulthandler import disable
-from operator import truediv
-from optparse import Option
 from tkinter import messagebox
 import tkinter as tk
-from turtle import color, width
 from pystray import MenuItem as item
 import pystray
 import PIL.Image
@@ -26,8 +20,10 @@ class MonitorFrame:
         #呼叫生成MonitorString
         self.MonitorIndex=MonitorIndex
         self.MonitorList=MonitorList
-        os.system("API\ControlMyMonitor.exe /scomma Cache\monitor"+ str(MonitorIndex) +".txt "+MonitorList[0+6*MonitorIndex][21:])
-        file = open('Cache\monitor'+str(MonitorIndex)+'.txt', 'r',encoding="utf-8")
+        cmdstr="API\ControlMyMonitor.exe /scomma Log\monitor"+ str(MonitorIndex) +".txt "+MonitorList[6*MonitorIndex][21:]
+        os.system(cmdstr)
+        #subprocess.call(cmdstr, creationflags=CREATE_NO_WINDOW)
+        file = open('Log\monitor'+str(MonitorIndex)+'.txt', 'r',encoding="utf-8")
         self.Option=file.readlines()
         file.close()
 
@@ -39,8 +35,11 @@ class MonitorFrame:
         #產生OptionList Dict
         for j in range(len(self.Option)):
             self.OptionList[self.Option[j][:2]]=self.Option[j].split(",",5)
-        lf=ttk.LabelFrame(controlPanel, text=MonitorList[1+6*MonitorIndex][15:-2])
+
+        #產生螢幕frame
+        lf=ttk.LabelFrame(second_frame, text=MonitorList[1+6*MonitorIndex][15:-2])
         lf.pack(fill='x',padx=10,pady=10,ipadx=10,ipady=2)
+        
 
         #產生inputButton
         if(self.OptionList.get('60')!=None):
@@ -118,10 +117,16 @@ class MonitorFrame:
         #產生清晰度調整面板
         if(self.OptionList.get('87')!=None):
             sharpnessFrame=ttk.LabelFrame(lf,text="螢幕清晰度調整")
-            sharpnessFrame.grid(row=4, column=1, padx=5, pady=3,sticky=W)
-            self.sharpnessSpinbox=ttk.Spinbox(sharpnessFrame, bootstyle="light",width=9,from_=0, to=int(self.OptionList["87"][4]),wrap=False,command=self.setSharpness)
+            sharpnessFrame.grid(row=4, column=1, padx=5, pady=3,sticky=EW)
+            self.sharpnessSpinbox=ttk.Spinbox(sharpnessFrame, bootstyle="light",width=7,from_=0, to=int(self.OptionList["87"][4]),wrap=False,command=self.setSharpness)
             self.sharpnessSpinbox.grid(row=0, column=0, padx=5, pady=5,sticky=N)
             self.sharpnessSpinbox.set(int(self.OptionList["87"][3]))
+        else:
+            sharpnessFrame=ttk.LabelFrame(lf,text="螢幕清晰度調整")
+            sharpnessFrame.grid(row=4, column=1, padx=5, pady=3,sticky=EW)
+            self.sharpnessSpinbox=ttk.Spinbox(sharpnessFrame, bootstyle="light",width=7,wrap=False,state="disabled")
+            self.sharpnessSpinbox.grid(row=0, column=0, padx=5, pady=5,sticky=N)
+            self.sharpnessSpinbox.set("不支援")
         
 
         #產生顏色設定檔面板
@@ -134,15 +139,20 @@ class MonitorFrame:
             if(self.OptionList["14"][5][1:-2]!=""):
                 self.colorOptions=self.OptionList["14"][5][1:-2].split(',')
                 colorProFrame=ttk.LabelFrame(lf,text="色彩設定檔")
-                colorProFrame.grid(row=4, column=2, padx=5, pady=3,sticky=W)
+                colorProFrame.grid(row=4, column=2, padx=5, pady=3,sticky=EW)
                 
-                self.colorProMenuButton=ttk.Menubutton(colorProFrame, bootstyle="light-outline",width=9,text="選擇設定檔")
+                self.colorProMenuButton=ttk.Menubutton(colorProFrame, bootstyle="light-outline",width=6,text="選擇設定檔")
                 self.colorProMenu=ttk.Menu(self.colorProMenuButton,tearoff=False)
                 for i in self.colorOptions:
                     self.colorProMenu.add_radiobutton(label=int(i),value=int(i),variable=self.selected_value)
                 self.colorProMenuButton["menu"]=self.colorProMenu
                 self.colorProMenuButton.grid(row=0, column=0, padx=5, pady=5,sticky=N)
-                
+        else:
+            sharpnessFrame=ttk.LabelFrame(lf,text="色彩設定檔")
+            sharpnessFrame.grid(row=4, column=1, padx=5, pady=3,sticky=EW)
+            self.sharpnessSpinbox=ttk.Spinbox(sharpnessFrame, bootstyle="light",width=7,wrap=False,state="disabled")
+            self.sharpnessSpinbox.grid(row=0, column=0, padx=5, pady=5,sticky=N)
+            self.sharpnessSpinbox.set("不支援")
 
 
 
@@ -190,22 +200,57 @@ class MonitorFrame:
 
 
 
+def _on_mousewheel(event):
+    my_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
 #套用樣式及視窗大小
 controlPanel = ttk.Window(themename="cyborg")
-controlPanel.resizable(False,False)
+controlPanel.resizable(False,True)
 controlPanel.minsize(300, 200)
 controlPanel.iconbitmap(default="img\image.ico")
 controlPanel.iconbitmap("img\image.ico")
 
+
+
+
+
 #設定視窗參數
-controlPanel.title('OpenMonitorControlPanel v0.5-alpha')
+controlPanel.title('OpenMonitorControlPanel v0.6-alpha')
 controlPanel.attributes("-alpha", 0.85)
 controlPanel.attributes("-topmost", 1)
 controlPanel.geometry('-0-40')
 
-#導入圖片
+# Create A Main frame
+main_frame = Frame(controlPanel)
+main_frame.pack(fill=BOTH,expand=1)
 
+
+# Create A Canvas
+my_canvas = Canvas(main_frame)
+my_canvas.pack(side=LEFT,fill=BOTH,expand=1)
+
+
+# Add A Scrollbars to Canvas
+y_scrollbar = ttk.Scrollbar(main_frame,orient=VERTICAL,command=my_canvas.yview)
+y_scrollbar.pack(side=RIGHT,fill=Y)
+
+
+# Configure the canvas
+my_canvas.configure(yscrollcommand=y_scrollbar.set)
+my_canvas.bind("<Configure>",lambda e: my_canvas.config(scrollregion= my_canvas.bbox(ALL)))
+controlPanel.bind_all("<MouseWheel>", _on_mousewheel)
+
+
+
+# Create Another Frame INSIDE the Canvas
+second_frame = Frame(my_canvas)
+
+
+# Add that New Frame a Window In The Canvas
+my_canvas.create_window((0,0),window= second_frame, anchor="nw")
+
+
+#導入圖片
 VGAImg = PhotoImage(file = r"img\VGA.png")
 HDMIImg = PhotoImage(file = r"img\HDMI.png")
 DPImg = PhotoImage(file = r"img\DP.png")
@@ -236,8 +281,8 @@ controlPanel.protocol("WM_DELETE_WINDOW", withdraw_window)
 
 #掃描螢幕
 def scanMonitor():
-    subprocess.call("API\ControlMyMonitor.exe /smonitors Cache\smonitors.txt", creationflags=CREATE_NO_WINDOW)
-    file = open('Cache\smonitors.txt', 'r',encoding="utf-16 le")
+    subprocess.call("API\ControlMyMonitor.exe /smonitors Log\smonitors.txt", creationflags=CREATE_NO_WINDOW)
+    file = open('Log\smonitors.txt', 'r',encoding="utf-16 le")
 
     MonitorList = file.readlines()
     MonitorList[0]=MonitorList[0][1:]
@@ -260,5 +305,9 @@ def scanMonitor():
 #refreshButton.pack(anchor=tk.NE,padx=10,pady=10)
 
 scanMonitor()
+controlPanel.geometry('400x320')
 controlPanel.mainloop()
+
+
+
 
