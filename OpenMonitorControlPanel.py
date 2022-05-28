@@ -46,10 +46,18 @@ class MonitorFrame:
             if(self.OptionList["60"][5][1:-2]!=""):
                 self.inputOptions=self.OptionList["60"][5][1:-2].split(',')
                 for j in range(len(self.inputOptions)):
-                    if(int(self.inputOptions[j])<3):
+                    if(int(self.inputOptions[j])==1 and MonitorList[1+6*MonitorIndex][15:-2]=="24B2W1"):
+                        action_with_arg = partial(self.selectInput, self.inputOptions[j])
+                        self.inputButton.append(ttk.Button(lf, text="   DP   ", image = DPImg, compound=LEFT, width=6, bootstyle="secondary",command=action_with_arg))
+
+                    elif(int(self.inputOptions[j])==16 and MonitorList[1+6*MonitorIndex][15:-2]=="BenQ EX3203R"):
+                        action_with_arg = partial(self.selectInput, self.inputOptions[j])
+                        self.inputButton.append(ttk.Button(lf, text=" TYPE-C ", image = CImg, compound=LEFT, width=6, bootstyle="secondary",command=action_with_arg))
+                                        
+                    elif(int(self.inputOptions[j])<3):
                         action_with_arg = partial(self.selectInput, self.inputOptions[j])
                         self.inputButton.append(ttk.Button(lf, text="   VGA  ", image = VGAImg, compound=LEFT, width=6, bootstyle="secondary",command=action_with_arg))
-                        
+                    
                     elif(int(self.inputOptions[j])<15):
                         action_with_arg = partial(self.selectInput, self.inputOptions[j])
                         self.inputButton.append(ttk.Button(lf, text="   DVI  ", image = DVIImg, compound=LEFT, width=6, bootstyle="secondary",command=action_with_arg))
@@ -215,7 +223,7 @@ controlPanel.iconbitmap("img\image.ico")
 
 
 #設定視窗參數
-controlPanel.title('OpenMonitorControlPanel v0.6-alpha')
+controlPanel.title('OpenMonitorControlPanel v0.7-alpha')
 controlPanel.attributes("-alpha", 0.85)
 controlPanel.attributes("-topmost", 1)
 controlPanel.geometry('-0-40')
@@ -255,7 +263,7 @@ VGAImg = PhotoImage(file = r"img\VGA.png")
 HDMIImg = PhotoImage(file = r"img\HDMI.png")
 DPImg = PhotoImage(file = r"img\DP.png")
 DVIImg = PhotoImage(file = r"img\DVI.png")
-
+CImg = PhotoImage(file = r"img\C.png")
 
 
 #System Tray Code
